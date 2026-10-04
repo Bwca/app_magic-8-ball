@@ -11,7 +11,7 @@ export function obtainConfiguration(): Configuration {
   const rendererType = (params.get(ParamKeys.RendererType) || 'THREE') as RendererType;
 
   if (!checkDevMode()) {
-    history.replaceState('', '', '/');
+    history.replaceState('', '', window.location.pathname);
   }
 
   return {
