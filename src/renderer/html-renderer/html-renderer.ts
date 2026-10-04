@@ -1,7 +1,5 @@
-
-import { AnswerPayload } from 'fork-magic-8-ball';
-
 import { AbstractRenderer } from '../../shared/models/abstract-renderer';
+import { AnswerPayload } from '../../shared/models/answer-payload';
 import { HtmlRendererStyle } from './html-renderer.style.enum';
 import './html-renderer.style.scss';
 
