@@ -53,6 +53,6 @@
   "dependencies": {
     "@merry-solutions/debounce": "^1.0.1",
     "@types/pug": "^2.0.4",
-    "fork-magic-8-ball": "file:fork-magic-8-ball-1.4.0.tgz"
+    "fork-magic-8-ball": "file:./external-dependencies/fork-magic-8-ball-1.4.0.tgz"
   }
 }

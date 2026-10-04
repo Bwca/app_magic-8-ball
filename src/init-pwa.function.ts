@@ -1,6 +1,6 @@
 export function initPwa(): void {
   window.addEventListener('load', () => {
-    registerSW();
+    void registerSW();
   });
 }
 

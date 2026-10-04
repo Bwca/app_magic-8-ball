@@ -1,6 +1,6 @@
 import { debounce } from '@merry-solutions/debounce';
 
-export function createMotionDetector(onMotioNStart: Callback, onMotionEnd: Callback): (event: DeviceMotionEvent) => void {
+export function createMotionDetector(onMotionStart: Callback, onMotionEnd: Callback): (event: DeviceMotionEvent) => void {
   const current = { x: 0, y: 0 };
   let isMotionInProgress = false;
 
@@ -13,9 +13,9 @@ export function createMotionDetector(onMotioNStart: Callback, onMotionEnd: Callb
       current.x = event.accelerationIncludingGravity?.x ?? 0;
       current.y = event.accelerationIncludingGravity?.y ?? 0;
       isMotionInProgress = true;
-      onMotioNStart();
+      onMotionStart();
     } else if (isMotionInProgress) {
-      debouncedShowAnswer();
+      void debouncedShowAnswer();
       isMotionInProgress = false;
     }
   };
