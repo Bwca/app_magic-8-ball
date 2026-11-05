@@ -1,3 +1,4 @@
+import { makeAnswerProvider } from './answer-provider';
 import { obtainConfiguration } from './configuration';
 import { createMotionDetector } from './create-motion-detector';
 import { createShowAnswer } from './create-show-answer';
@@ -16,7 +17,9 @@ async function main(): Promise<void> {
   const sceneRenderer = await makeRenderer(rendererType, color);
   sceneRenderer.showBall(document.body);
 
-  const showAnswer = createShowAnswer(sceneRenderer, [...answers]);
+  const answerProvider = await makeAnswerProvider('PRESET', answers);
+
+  const showAnswer = createShowAnswer(sceneRenderer, () => answerProvider);
   const showAnswerOnShake = createMotionDetector(() => sceneRenderer.hideAnswer(), showAnswer);
 
   document.addEventListener('click', showAnswer);
