@@ -21,7 +21,6 @@ export class ChromeAiAnswerProviderTestSuite {
     expect.toBeEqual(answer.text, 'Fate says|no');
     expect.toBeEqual(request!.tone, AnswerTypes.Negative);
     expect.toBeEqual(request!.maxLength, 'Outlook not so good'.length);
-    expect.toBeTrue(request!.examples.includes('My sources say no'));
   }
 
   @Test()

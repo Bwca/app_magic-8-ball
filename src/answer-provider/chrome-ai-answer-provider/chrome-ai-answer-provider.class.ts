@@ -6,7 +6,6 @@ import { Answer } from '../../shared/models/answer.model';
 import { getRandomItem } from '../../shared/utils/get-random-item.function';
 import { AiAnswerGenerator, createAiAnswerGenerator } from './create-ai-answer-generator.function';
 import { getMaxAnswerLength } from './get-max-answer-length.function';
-import { getPlainAnswerText } from './get-plain-answer-text.function';
 
 /** Shown when Chrome AI fails to produce an acceptable answer: the "try again later" style presets. */
 export const AI_FAILURE_ANSWERS: Readonly<Answer[]> = DEFAULT_ANSWERS.filter(({ type }) => type === AnswerTypes.NonCommittal);
@@ -27,9 +26,7 @@ export class ChromeAiAnswerProvider implements AbstractAnswerProvider {
 
   public async getAnswer(): Promise<Answer> {
     const { type } = getRandomItem(this.answers);
-    const examples = this.answers.filter((answer) => answer.type === type).map(({ text }) => getPlainAnswerText(text));
-
-    const aiText = await this.generateAiAnswer({ tone: type, maxLength: this.maxLength, examples });
+    const aiText = await this.generateAiAnswer({ tone: type, maxLength: this.maxLength });
 
     return aiText ? insertAnswerLineBreaks({ type, text: aiText }) : getRandomItem(AI_FAILURE_ANSWERS);
   }

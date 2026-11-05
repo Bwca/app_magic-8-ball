@@ -1,17 +1,24 @@
-import { buildAnswerPrompt, buildEmptyAnswerPrompt, buildTooLongPrompt, SYSTEM_PROMPT } from './build-prompts.function';
-import { getLanguageModel, LanguageModelSession, LANGUAGE_MODEL_OPTIONS } from './language-model.model';
+import { getRandomItem } from '../../shared/utils/get-random-item.function';
+import {
+  buildAnswerPrompt,
+  buildEmptyAnswerPrompt,
+  buildTooLongPrompt,
+  FEW_SHOT_PROMPTS,
+  SYSTEM_PROMPT,
+  THEMES,
+} from './build-prompts.function';
+import { getLanguageModel, LanguageModelMessage, LanguageModelSession, LANGUAGE_MODEL_OPTIONS } from './language-model.model';
 import { sanitizeAiAnswer } from './sanitize-ai-answer.function';
 
 export const MAX_AI_ATTEMPTS = 3;
 const ATTEMPT_TIMEOUT_MS = 15000;
+const INITIAL_PROMPTS: LanguageModelMessage[] = [{ role: 'system', content: SYSTEM_PROMPT }, ...FEW_SHOT_PROMPTS];
 
 export interface AiAnswerRequest {
   /** Tone the answer must have, one of the AnswerTypes present in the active answer set. */
   tone: string;
   /** Hard limit: the answer may not be longer than the longest preset answer. */
   maxLength: number;
-  /** Plain-text preset answers of the same tone, used as style examples. */
-  examples: string[];
 }
 
 /** Resolves to the generated answer, or `null` if no acceptable answer was produced within MAX_AI_ATTEMPTS. */
@@ -26,17 +33,15 @@ export function createAiAnswerGenerator(): AiAnswerGenerator {
       if (!languageModel) {
         return Promise.reject(new Error('Chrome AI (LanguageModel) is not available'));
       }
-      baseSessionPromise = languageModel
-        .create({ ...LANGUAGE_MODEL_OPTIONS, initialPrompts: [{ role: 'system', content: SYSTEM_PROMPT }] })
-        .catch((error) => {
-          baseSessionPromise = null; // allow a later retry
-          throw error;
-        });
+      baseSessionPromise = languageModel.create({ ...LANGUAGE_MODEL_OPTIONS, initialPrompts: INITIAL_PROMPTS }).catch((error) => {
+        baseSessionPromise = null; // allow a later retry
+        throw error;
+      });
     }
     return baseSessionPromise;
   };
 
-  return async ({ tone, maxLength, examples }) => {
+  return async ({ tone, maxLength }) => {
     let session: LanguageModelSession | null = null;
     try {
       const baseSession = await getBaseSession();
@@ -45,19 +50,18 @@ export function createAiAnswerGenerator(): AiAnswerGenerator {
         ? await baseSession.clone()
         : await getLanguageModel()!.create({
             ...LANGUAGE_MODEL_OPTIONS,
-            initialPrompts: [{ role: 'system', content: SYSTEM_PROMPT }],
+            initialPrompts: INITIAL_PROMPTS,
           });
 
-      let prompt = buildAnswerPrompt(tone, maxLength, examples);
+      let prompt = buildAnswerPrompt(tone, maxLength, getRandomItem(THEMES));
       for (let attempt = 1; attempt <= MAX_AI_ATTEMPTS; attempt++) {
         let answer = '';
         try {
           answer = sanitizeAiAnswer(await session.prompt(prompt, { signal: createTimeoutSignal(ATTEMPT_TIMEOUT_MS) }));
         } catch (error) {
           // tslint:disable-next-line: no-console
-          // tslint:disable-next-line: no-console
           console.warn(`Chrome AI attempt ${attempt}/${MAX_AI_ATTEMPTS} failed`, error);
-          prompt = buildAnswerPrompt(tone, maxLength, examples);
+          prompt = buildAnswerPrompt(tone, maxLength, getRandomItem(THEMES));
           continue;
         }
 

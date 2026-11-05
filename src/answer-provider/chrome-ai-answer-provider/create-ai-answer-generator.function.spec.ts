@@ -2,7 +2,7 @@ import { expect, Test, TestSuite } from 'testyts';
 
 import { createAiAnswerGenerator, MAX_AI_ATTEMPTS } from './create-ai-answer-generator.function';
 
-const REQUEST = { tone: 'affirmative', maxLength: 12, examples: ['Yes'] };
+const REQUEST = { tone: 'affirmative', maxLength: 12 };
 
 /** Installs a fake `LanguageModel` global replying with the given responses (strings, or Errors to throw). */
 function installFakeLanguageModel(responses: (string | Error)[]): { prompts: string[] } {
@@ -45,7 +45,7 @@ export class CreateAiAnswerGeneratorTestSuite {
     const { prompts } = installFakeLanguageModel(['The cosmos smiles upon you', 'Surely so']);
     await createAiAnswerGenerator()(REQUEST);
     expect.toBeEqual(prompts.length, 2);
-    expect.toBeTrue(prompts[1].includes('exceeds the limit of 12 characters'));
+    expect.toBeTrue(prompts[1].includes('at most 12 characters'));
   }
 
   @Test()
