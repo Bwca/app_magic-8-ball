@@ -1,1 +1,1 @@
-export type AnswerProviderType = 'PRESET';
+export type AnswerProviderType = 'PRESET' | 'CHROME_AI';
