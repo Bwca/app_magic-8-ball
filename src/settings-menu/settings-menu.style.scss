@@ -1,0 +1,113 @@
+$accent: #4f7cff;
+
+.settings-menu {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: #eee;
+
+  .settings-menu__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    color: inherit;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.4s;
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  &.is-open .settings-menu__button {
+    transform: rotate(60deg);
+  }
+
+  .settings-menu__panel {
+    display: none;
+    position: absolute;
+    top: 48px;
+    right: 0;
+    width: 240px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(20, 20, 28, 0.92);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    font-size: 14px;
+  }
+
+  &.is-open .settings-menu__panel {
+    display: block;
+  }
+
+  .settings-menu__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .settings-menu__toggle-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .settings-menu__toggle-switch {
+    position: relative;
+    flex-shrink: 0;
+    width: 38px;
+    height: 22px;
+    border-radius: 11px;
+    background: #555;
+    transition: background 0.2s;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.2s;
+    }
+  }
+
+  .settings-menu__toggle-input:checked + .settings-menu__toggle-switch {
+    background: $accent;
+
+    &::after {
+      transform: translateX(16px);
+    }
+  }
+
+  .settings-menu__toggle-input:focus-visible + .settings-menu__toggle-switch {
+    outline: 2px solid $accent;
+    outline-offset: 2px;
+  }
+
+  .settings-menu__note {
+    margin: 10px 0 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #aaa;
+  }
+}
