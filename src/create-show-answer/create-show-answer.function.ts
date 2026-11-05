@@ -14,7 +14,6 @@ export function createShowAnswer(renderer: AbstractRenderer, answers: Answer[]):
 }
 
 function getRandomAnswer(answers: Answer[]): Answer {
-  const maxIndex = answers.length - 1;
-  const index = Math.floor(Math.random() * Math.floor(maxIndex));
+  const index = Math.floor(Math.random() * answers.length);
   return answers[index];
 }
